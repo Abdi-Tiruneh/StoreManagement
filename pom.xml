@@ -89,7 +89,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <finalName>Store-Management</finalName>
+<!--                    <finalName>Store-Management</finalName>-->
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
