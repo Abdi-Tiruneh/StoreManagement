@@ -4,18 +4,12 @@ spring:
     name: STORE-MANAGEMENT
 
   # Set the configuration for connecting to the PostgreSQL database
-  #  datasource:
-  #    url: jdbc:postgresql://localhost:5432/store_management
-  #    username: postgres
-  #    password: 1313
-
-  #  datasource:
-  #    url: jdbc:postgresql://dpg-ckp49ioujous738sam10-a.oregon-postgres.render.com:5432/store_management
-  #    username: store_management_user
-  #    password: xilL5aqxoSpjNGa9A3Lrac71JHcfPZuj
-
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/store_management
+#    username: postgres
+#    password: 1313
   datasource:
-    url: jdbc:postgresql://xilL5aqxoSpjNGa9A3Lrac71JHcfPZuj@dpg-ckp49ioujous738sam10-a:5432/store_management
+    url: jdbc:postgresql://dpg-ckp49ioujous738sam10-a.oregon-postgres.render.com:5432/store_management
     username: store_management_user
     password: xilL5aqxoSpjNGa9A3Lrac71JHcfPZuj
 

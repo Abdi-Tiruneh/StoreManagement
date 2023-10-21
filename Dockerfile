@@ -3,6 +3,6 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 FROM openjdk:17.0.1-jdk-slim
-COPY --from=build /target/StoreManagement-0.0.1-SNAPSHOT.jar storeManagement.jar
+COPY --from=build /target/*.jar storeManagement.jar
 EXPOSE 9191
 ENTRYPOINT ["java","-jar","storeManagement.jar"]
