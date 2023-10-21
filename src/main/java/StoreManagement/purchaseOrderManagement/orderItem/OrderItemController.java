@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/order-items")
-@Tag(name = "Purchase Order API.")
+@Tag(name = "Order Item API.")
 public class OrderItemController {
     private final OrderItemService orderItemService;
 
