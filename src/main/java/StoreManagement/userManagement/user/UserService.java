@@ -20,7 +20,7 @@ public interface UserService {
     List<UserResponse> getUsers();
 
     //
-//    ItemResponse blockUser(Long id);
+//    StoreInventoryResponse blockUser(Long id);
 //
     UserResponse editUser(UserUpdateReq updateReq);
 //

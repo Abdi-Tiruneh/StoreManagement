@@ -87,14 +87,14 @@ public class UserServiceImpl implements UserService {
     }
 //
 //    @Override
-//    public ItemResponse blockUser(Long id) {
+//    public StoreInventoryResponse blockUser(Long id) {
 //        Users user = userUtils.getById(id);
 //
 //        user.setUserStatus(Status.BLOCKED);
 //        user.setUpdatedBy(currentLoggedInUser.getUser().getFullName());
 //
 //        Users savedUser = userRepository.save(user);
-//        return ItemMapper.toUserResponse(savedUser);
+//        return StoreInventoryMapper.toUserResponse(savedUser);
 //    }
 //
 //    @Override

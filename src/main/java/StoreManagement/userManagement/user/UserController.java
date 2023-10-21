@@ -44,7 +44,7 @@ public class UserController {
         return ResponseEntity.ok(userService.editUser(updateReq));
     }
 
-//    public ResponseEntity<ItemResponse> blockUser(@PathVariable Long id) {
+//    public ResponseEntity<StoreInventoryResponse> blockUser(@PathVariable Long id) {
 //        return ResponseEntity.ok(userService.blockUser(id));
 //    }
 //
