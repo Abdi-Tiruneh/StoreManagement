@@ -16,17 +16,11 @@ public class RoleService {
 
     // Retrieves all roles.
     public List<Role> getRoles() {
-        List<Role> roles = roleRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+        List<Role> roles = roleRepository.findAll(Sort.by(Sort.Direction.ASC, "roleId"));
         if (roles.isEmpty())
             throw new ResourceNotFoundException("No roles found.");
 
         return roles;
-    }
-
-    // Retrieves a role by its name.
-    public Role getRoleByName(String roleName) {
-        return roleRepository.findByRoleName(roleName)
-                .orElseThrow(() -> new ResourceNotFoundException("Role not found."));
     }
 
     // Retrieves a role by id.
