@@ -1,5 +1,6 @@
 package StoreManagement.storeManagement;
 
+import StoreManagement.exceptions.customExceptions.ResourceAlreadyExistsException;
 import StoreManagement.exceptions.customExceptions.ResourceNotFoundException;
 import StoreManagement.storeManagement.dto.StoreMapper;
 import StoreManagement.storeManagement.dto.StoreRegistrationReq;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -19,36 +21,23 @@ public class StoreServiceImpl implements StoreService {
     private final StoreRepository storeRepository;
     private final CurrentlyLoggedInUser currentlyLoggedInUser;
 
-
-    //Todo: openingDate(registrationReq.getOpeningDate() != null ? registrationReq.getOpeningDate() : LocalDate.now())
     @Override
     public StoreResponse createStore(StoreRegistrationReq registrationReq) {
+        if (storeRepository.findByContactInformation((registrationReq.getContactInformation())).isPresent())
+            throw new ResourceAlreadyExistsException("Contact Information is already taken");
+
         Store store = Store.builder()
                 .storeName(registrationReq.getStoreName())
                 .location(registrationReq.getLocation())
                 .contactInformation(registrationReq.getContactInformation())
-                .openingDate(registrationReq.getOpeningDate() != null ? registrationReq.getOpeningDate() : LocalDate.now())
+                .openingDate(registrationReq.getOpeningDate() != null ?
+                        registrationReq.getOpeningDate() : LocalDate.now().plusDays(7))
                 .storeType(StoreType.getStoreTypeEnum(registrationReq.getStoreType()))
                 .createdBy(currentlyLoggedInUser.getUser())
                 .build();
 
         Store savedStore = storeRepository.save(store);
         return StoreMapper.toStoreResponse(savedStore);
-    }
-
-    @Override
-    public List<StoreResponse> getStores() {
-        List<Store> stores = storeRepository.findAll(Sort.by(Sort.Order.asc("id")));
-        if (stores.isEmpty())
-            throw new ResourceNotFoundException("No stores found. Please check back later or contact our support team for assistance.");
-
-        return stores.stream().map(StoreMapper::toStoreResponse).toList();
-    }
-
-    @Override
-    public Store getStoreById(Long storeId) {
-        return storeRepository.findById(storeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Item not found with ID: " + storeId));
     }
 
     @Override
@@ -61,8 +50,13 @@ public class StoreServiceImpl implements StoreService {
         if (updateReq.getLocation() != null)
             store.setLocation(updateReq.getLocation());
 
-        if (updateReq.getContactInformation() != null)
+        if (updateReq.getContactInformation() != null && !store.getContactInformation().equals(updateReq.getContactInformation())) {
+            // Check if the new contactInformation is already taken
+            if (storeRepository.findByContactInformation((updateReq.getContactInformation())).isPresent())
+                throw new ResourceAlreadyExistsException("Contact Information is already taken");
+
             store.setContactInformation(updateReq.getContactInformation());
+        }
 
         if (updateReq.getOpeningDate() != null)
             store.setOpeningDate(updateReq.getOpeningDate());
@@ -72,6 +66,53 @@ public class StoreServiceImpl implements StoreService {
 
         Store savedStore = storeRepository.save(store);
         return StoreMapper.toStoreResponse(savedStore);
+    }
+
+    @Override
+    public List<StoreResponse> getAllStores() {
+        List<Store> stores = storeRepository.findAll(Sort.by(Sort.Order.asc("storeId")));
+        if (stores.isEmpty())
+            throw new ResourceNotFoundException("No stores found.");
+
+        return stores.stream().map(StoreMapper::toStoreResponse).toList();
+    }
+
+    @Override
+    public StoreResponse getStoreById(Long storeId) {
+        Store store = getById(storeId);
+        return StoreMapper.toStoreResponse(store);
+    }
+
+    @Override
+    public Store utilGetStoreById(Long storeId) {
+        return storeRepository.findById(storeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Item not found with ID: " + storeId));
+    }
+
+    @Override
+    public List<StoreResponse> searchStoresByNameOrLocation(String storeName) {
+        List<Store> stores = storeRepository.searchStores(storeName);
+        return stores.stream().map(StoreMapper::toStoreResponse).toList();
+    }
+
+    @Override
+    public List<StoreResponse> getStoresByStoreType(StoreType storeType) {
+        List<Store> stores = storeRepository.findByStoreType(storeType);
+        return stores.stream().map(StoreMapper::toStoreResponse).toList();
+    }
+
+    @Override
+    public List<StoreResponse> getStoresByDateRange(LocalDate startDate, LocalDate endDate) {
+        List<Store> stores = storeRepository.findByOpeningDateBetween(startDate, endDate);
+        //sort by openingDate
+        stores.sort(Comparator.comparing(Store::getOpeningDate));
+        return stores.stream().map(StoreMapper::toStoreResponse).toList();
+    }
+
+    @Override
+    public List<StoreResponse> getStoresByOpeningDate(LocalDate openingDate) {
+        List<Store> stores = storeRepository.findByOpeningDate(openingDate);
+        return stores.stream().map(StoreMapper::toStoreResponse).toList();
     }
 
     public Store getById(Long id) {

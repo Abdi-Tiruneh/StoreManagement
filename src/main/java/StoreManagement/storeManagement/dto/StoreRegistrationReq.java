@@ -1,9 +1,11 @@
 package StoreManagement.storeManagement.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -20,6 +22,8 @@ public class StoreRegistrationReq {
     @NotBlank(message = "Contact Information is required")
     private String contactInformation;
 
+    @NotNull(message = "Opening Date is required")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate openingDate;
 
     @NotBlank(message = "Store type is required")

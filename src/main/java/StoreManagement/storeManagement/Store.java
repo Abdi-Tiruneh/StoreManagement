@@ -2,8 +2,10 @@ package StoreManagement.storeManagement;
 
 import StoreManagement.userManagement.user.Users;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 @Table(name = "stores")
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Store {
 
     @Id
@@ -27,7 +31,7 @@ public class Store {
     @Column(nullable = false)
     private String location;
 
-    @Column(name = "contact_Information", nullable = false)
+    @Column(name = "contact_Information", nullable = false,unique = true)
     private String contactInformation;
 
     @Enumerated(EnumType.STRING)

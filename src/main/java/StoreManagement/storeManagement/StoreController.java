@@ -9,7 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api/v1/stores")
@@ -27,24 +31,49 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdStore);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{storeId}")
     public ResponseEntity<StoreResponse> updateStore(
-            @PathVariable Long id, @RequestBody @Valid StoreUpdateReq updateReq) {
-        return ResponseEntity.ok(storeService.updateStore(id,updateReq));
-    }
-    @GetMapping
-    public ResponseEntity<List<StoreResponse>> getStores() {
-        return ResponseEntity.ok(storeService.getStores());
+            @PathVariable Long storeId, @RequestBody @Valid StoreUpdateReq updateReq) {
+        return ResponseEntity.ok(storeService.updateStore(storeId, updateReq));
     }
 
-//    @GetMapping("/search")
-//    public ResponseEntity<List<Store>> searchStores(
-//            @RequestParam(required = false) String location,
-//            @RequestParam(required = false) StoreType storeType,
-//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate openingDate,
-//            @RequestParam(required = false) String storeName) {
-//        List<Store> stores = storeService.searchStores(location, storeType, openingDate, storeName);
-//        return ResponseEntity.ok(stores);
-//    }
+    @GetMapping
+    public ResponseEntity<List<StoreResponse>> getAllStores() {
+        return ResponseEntity.ok(storeService.getAllStores());
+    }
+
+    @GetMapping("/{storeId}")
+    public ResponseEntity<StoreResponse> getStoreById(@PathVariable Long storeId) {
+        return ResponseEntity.ok(storeService.getStoreById(storeId));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<StoreResponse>> searchStores(@RequestParam String query) {
+        return ResponseEntity.ok(storeService.searchStoresByNameOrLocation(query));
+    }
+
+    @GetMapping("/by-opening-date")
+    public ResponseEntity<List<StoreResponse>> getStoresByOpeningDate(@RequestParam("date") LocalDate openingDate) {
+        return ResponseEntity.ok(storeService.getStoresByOpeningDate(openingDate));
+    }
+
+    @GetMapping("/by-date-range")
+    public ResponseEntity<List<StoreResponse>> getStoresByDateRange(
+            @RequestParam("start") LocalDate startDate,
+            @RequestParam("end") LocalDate endDate) {
+        return ResponseEntity.ok(storeService.getStoresByDateRange(startDate, endDate));
+    }
+
+    @GetMapping("/by-store-type")
+    public ResponseEntity<List<StoreResponse>> getStoresByStoreType(@RequestParam("storeType") String storeType) {
+        String pattern = "RETAIL|WHOLESALE|ONLINE";
+        Pattern regex = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = regex.matcher(storeType);
+        if (matcher.matches())
+            return ResponseEntity.ok(storeService.getStoresByStoreType(StoreType.valueOf(storeType.toUpperCase())));
+        else
+            return ResponseEntity.ok(Collections.emptyList());
+    }
+
 }
 
