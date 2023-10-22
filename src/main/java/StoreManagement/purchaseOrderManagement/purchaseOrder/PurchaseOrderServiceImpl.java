@@ -37,7 +37,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Override
     public PurchaseOrder createPurchaseOrder(PurchaseOrderRequest purchaseOrderRequest) {
-        Store store = storeService.getStoreById(purchaseOrderRequest.getStoreId());
+        Store store = storeService.utilGetStoreById(purchaseOrderRequest.getStoreId());
 
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         purchaseOrder.setStore(store);

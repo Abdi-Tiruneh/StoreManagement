@@ -44,7 +44,7 @@ public class StoreInventoryServiceImpl implements StoreInventoryService {
 
     @Override
     public StoreInventoryResponse createStoreInventory(StoreInventoryReq storeInventoryReq) {
-        Store store = storeService.getStoreById(storeInventoryReq.getStoreId());
+        Store store = storeService.utilGetStoreById(storeInventoryReq.getStoreId());
         Item item = itemService.utilGetItemById(storeInventoryReq.getItemId());
 
         StoreInventory storeInventory = new StoreInventory();
