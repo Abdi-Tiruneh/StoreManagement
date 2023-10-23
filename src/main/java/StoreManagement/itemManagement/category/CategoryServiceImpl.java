@@ -1,7 +1,9 @@
 package StoreManagement.itemManagement.category;
 
+import StoreManagement.exceptions.customExceptions.ResourceAlreadyExistsException;
 import StoreManagement.exceptions.customExceptions.ResourceNotFoundException;
 import StoreManagement.itemManagement.category.dto.CategoryReq;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +18,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> getAllCategories() {
-        List<Category> categories = categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll(Sort.by(Sort.Order.asc("categoryName")));
         if (categories.isEmpty())
             throw new ResourceNotFoundException("No Categories found.");
 
@@ -31,17 +33,27 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category createCategory(CategoryReq categoryReq) {
-        Category category = new Category();
-        category.setCategoryName(categoryReq.getCategoryName());
+        String categoryName = categoryReq.getCategoryName().toUpperCase();
+        if (categoryRepository.existsByCategoryNameIgnoreCase(categoryName))
+            throw new ResourceAlreadyExistsException("Category name is already taken");
 
+        Category category = new Category();
+        category.setCategoryName(categoryName);
         return categoryRepository.save(category);
     }
 
     @Override
     public Category updateCategory(Integer categoryId, CategoryReq categoryReq) {
         Category category = getCategoryById(categoryId);
-        category.setCategoryName(categoryReq.getCategoryName());
+        String newCategoryName = categoryReq.getCategoryName();
+        // update only if provided Category name is different form existing one
+        if (newCategoryName != null && !category.getCategoryName().equalsIgnoreCase(newCategoryName)) {
+            // Check if the new Category name is already taken
+            if (categoryRepository.existsByCategoryNameIgnoreCase((newCategoryName)))
+                throw new ResourceAlreadyExistsException("Category name is already taken");
 
+            category.setCategoryName(newCategoryName.toUpperCase());
+        }
         return categoryRepository.save(category);
     }
 
