@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/store-inventory")
+@RequestMapping("/api/v1/store-inventory")
 @Tag(name = "Store Inventory API.")
 public class StoreInventoryController {
     private final StoreInventoryService storeInventoryService;
@@ -23,8 +23,8 @@ public class StoreInventoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StoreInventoryResponse>> getAllStoreInventory() {
-        return ResponseEntity.ok(storeInventoryService.getAllStoreInventory());
+    public ResponseEntity<List<StoreInventoryResponse>> getAllStoreInventory(@RequestParam Long storeId) {
+        return ResponseEntity.ok(storeInventoryService.getAllInventoryByStoreId(storeId));
     }
 
     @GetMapping("/{storeInventoryId}")

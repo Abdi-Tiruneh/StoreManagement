@@ -28,8 +28,11 @@ public class StoreInventory {
 
     private int quantity;
 
-    @Column(name = "thresh_hold")
-    private int threshHold;
+    @Column(name = "min_threshold")
+    private int minThreshold;
+
+    @Column(name = "max_threshold")
+    private int maxThreshold;
 
     @CreationTimestamp
     @Column(name = "created_at")

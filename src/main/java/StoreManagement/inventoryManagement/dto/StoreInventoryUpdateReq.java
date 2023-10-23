@@ -6,6 +6,6 @@ import lombok.Data;
 public class StoreInventoryUpdateReq {
 
     private Integer quantity;
-
-    private Integer threshHold;
+    private Integer minThreshold;
+    private Integer maxThreshold;
 }

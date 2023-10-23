@@ -7,13 +7,13 @@ import StoreManagement.inventoryManagement.dto.StoreInventoryUpdateReq;
 import java.util.List;
 
 public interface StoreInventoryService {
-    List<StoreInventoryResponse> getAllStoreInventory();
-
-    StoreInventoryResponse getStoreInventoryById(Long storeInventoryId);
-
     StoreInventoryResponse createStoreInventory(StoreInventoryReq storeInventoryReq);
 
     StoreInventoryResponse updateStoreInventory(Long storeInventoryId, StoreInventoryUpdateReq updateReq);
+
+    List<StoreInventoryResponse> getAllInventoryByStoreId(Long storeId);
+
+    StoreInventoryResponse getStoreInventoryById(Long storeInventoryId);
 
     void deleteStoreInventory(Long storeInventoryId);
 }
