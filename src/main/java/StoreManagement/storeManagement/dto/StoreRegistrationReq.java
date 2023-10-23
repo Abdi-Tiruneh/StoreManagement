@@ -27,7 +27,7 @@ public class StoreRegistrationReq {
     private LocalDate openingDate;
 
     @NotBlank(message = "Store type is required")
-    @Pattern(regexp = "^(?i)(RETAIL|WHOLESALE|ONLINE)$", message = "Invalid Store type. Valid roles are RETAIL, WHOLESALE or ONLINE.")
+    @Pattern(regexp = "^(?i)(RETAIL|WHOLESALE|ONLINE)$", message = "Invalid Store type. Valid store types are RETAIL, WHOLESALE or ONLINE.")
     private String storeType; // string representation of the storeType
 
 }

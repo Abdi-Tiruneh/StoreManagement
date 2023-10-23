@@ -74,7 +74,9 @@ public class StoreServiceImpl implements StoreService {
         if (stores.isEmpty())
             throw new ResourceNotFoundException("No stores found.");
 
-        return stores.stream().map(StoreMapper::toStoreResponse).toList();
+        return stores.stream().
+                map(StoreMapper::toStoreResponse)
+                .toList();
     }
 
     @Override
@@ -90,15 +92,22 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<StoreResponse> searchStoresByNameOrLocation(String storeName) {
-        List<Store> stores = storeRepository.searchStores(storeName);
-        return stores.stream().map(StoreMapper::toStoreResponse).toList();
+    public List<StoreResponse> searchStoresByNameOrLocation(String query) {
+        if (query == null)
+            return getAllStores();
+
+        List<Store> stores = storeRepository.searchStores(query);
+        return stores.stream().
+                map(StoreMapper::toStoreResponse)
+                .toList();
     }
 
     @Override
     public List<StoreResponse> getStoresByStoreType(StoreType storeType) {
         List<Store> stores = storeRepository.findByStoreType(storeType);
-        return stores.stream().map(StoreMapper::toStoreResponse).toList();
+        return stores.stream().
+                map(StoreMapper::toStoreResponse)
+                .toList();
     }
 
     @Override
@@ -106,13 +115,17 @@ public class StoreServiceImpl implements StoreService {
         List<Store> stores = storeRepository.findByOpeningDateBetween(startDate, endDate);
         //sort by openingDate
         stores.sort(Comparator.comparing(Store::getOpeningDate));
-        return stores.stream().map(StoreMapper::toStoreResponse).toList();
+        return stores.stream().
+                map(StoreMapper::toStoreResponse)
+                .toList();
     }
 
     @Override
     public List<StoreResponse> getStoresByOpeningDate(LocalDate openingDate) {
         List<Store> stores = storeRepository.findByOpeningDate(openingDate);
-        return stores.stream().map(StoreMapper::toStoreResponse).toList();
+        return stores.stream().
+                map(StoreMapper::toStoreResponse)
+                .toList();
     }
 
     public Store getById(Long id) {

@@ -16,7 +16,7 @@ public interface StoreService {
 
     StoreResponse getStoreById(Long storeId);
 
-    List<StoreResponse> searchStoresByNameOrLocation(String storeName);
+    List<StoreResponse> searchStoresByNameOrLocation(String query);
 
     List<StoreResponse> getStoresByStoreType(StoreType storeType);
 
