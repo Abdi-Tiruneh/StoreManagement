@@ -1,5 +1,6 @@
 package StoreManagement.itemManagement.item.dto;
 
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -13,8 +14,10 @@ public class ItemUpdateReq {
     @Size(min = 10, message = "Description must be at least 10 characters")
     private String description;
 
+    @Positive(message = "Price must be greater than 0")
     private BigDecimal price;
 
+    @Positive(message = "Initial Quantity must be greater than 0")
     private Integer initialQuantity;
 
     private Integer categoryId;

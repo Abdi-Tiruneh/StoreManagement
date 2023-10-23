@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -31,6 +32,24 @@ public class ItemController {
     public ResponseEntity<ItemResponse> getItemById(@PathVariable Long itemId) {
         return ResponseEntity.ok(itemService.getItemById(itemId));
     }
+
+    @GetMapping("/searchByName")
+    public ResponseEntity<List<ItemResponse>> searchItemsByName(@RequestParam(required = false) String itemName) {
+        return ResponseEntity.ok(itemService.searchItemsByItemName(itemName));
+    }
+
+    @GetMapping("/searchByCategory")
+    public ResponseEntity<List<ItemResponse>> searchItemsByCategory(@RequestParam Integer categoryId) {
+        return ResponseEntity.ok(itemService.searchItemsByCategory(categoryId));
+    }
+
+    @GetMapping("/searchByPriceRange")
+    public ResponseEntity<List<ItemResponse>> searchItemsByPriceRange(
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice) {
+        return ResponseEntity.ok(itemService.searchItemsByPriceRange(minPrice, maxPrice));
+    }
+
 
     @PostMapping
     public ResponseEntity<ItemResponse> createItem(@RequestBody @Valid ItemRegistrationReq itemRegistrationReq) {

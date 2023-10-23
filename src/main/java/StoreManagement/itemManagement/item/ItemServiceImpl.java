@@ -1,5 +1,6 @@
 package StoreManagement.itemManagement.item;
 
+import StoreManagement.exceptions.customExceptions.BadRequestException;
 import StoreManagement.exceptions.customExceptions.ResourceNotFoundException;
 import StoreManagement.itemManagement.category.Category;
 import StoreManagement.itemManagement.category.CategoryService;
@@ -11,8 +12,10 @@ import StoreManagement.userManagement.user.Users;
 import StoreManagement.utils.CurrentlyLoggedInUser;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -21,24 +24,6 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final CurrentlyLoggedInUser currentlyLoggedInUser;
     private final CategoryService categoryService;
-
-
-    @Override
-    public List<ItemResponse> getAllItems() {
-        List<Item> items = itemRepository.findAll();
-        if (items.isEmpty())
-            throw new ResourceNotFoundException("No Items found.");
-
-        return items.stream()
-                .map(ItemMapper::toItemResponse)
-                .toList();
-    }
-
-    @Override
-    public ItemResponse getItemById(Long itemId) {
-        Item item = utilGetItemById(itemId);
-        return ItemMapper.toItemResponse(item);
-    }
 
     @Override
     public ItemResponse createItem(ItemRegistrationReq itemRegistrationReq) {
@@ -74,6 +59,60 @@ public class ItemServiceImpl implements ItemService {
         item = itemRepository.save(item);
         return ItemMapper.toItemResponse(item);
     }
+
+    @Override
+    public List<ItemResponse> getAllItems() {
+        List<Item> items = itemRepository.findAll(Sort.by(Sort.Order.asc("itemId")));
+        if (items.isEmpty())
+            throw new ResourceNotFoundException("No Items found.");
+
+        return items.stream()
+                .map(ItemMapper::toItemResponse)
+                .toList();
+    }
+
+    @Override
+    public ItemResponse getItemById(Long itemId) {
+        Item item = utilGetItemById(itemId);
+        return ItemMapper.toItemResponse(item);
+    }
+
+    @Override
+    public List<ItemResponse> searchItemsByItemName(String itemName) {
+        if (itemName == null)
+            return getAllItems();
+
+        List<Item> items = itemRepository.findByItemNameContainingIgnoreCase(itemName);
+        return items.stream()
+                .map(ItemMapper::toItemResponse)
+                .toList();
+    }
+
+    @Override
+    public List<ItemResponse> searchItemsByCategory(Integer categoryId) {
+        List<Item> items = itemRepository.findByCategoryCategoryId(categoryId);
+        return items.stream()
+                .map(ItemMapper::toItemResponse)
+                .toList();
+    }
+
+    @Override
+    public List<ItemResponse> searchItemsByPriceRange(BigDecimal minPrice, BigDecimal maxPrice) {
+        if (minPrice == null)
+            minPrice = BigDecimal.ZERO;
+
+        if (maxPrice == null)
+            maxPrice = BigDecimal.valueOf(Double.MAX_VALUE);
+
+        if (maxPrice.compareTo(minPrice) < 0)
+            throw new BadRequestException("Max price must be greater than or equal to min price");
+
+        List<Item> items = itemRepository.findByPriceBetween(minPrice, maxPrice);
+        return items.stream()
+                .map(ItemMapper::toItemResponse)
+                .toList();
+    }
+
 
     @Override
     public void deleteItem(Long itemId) {

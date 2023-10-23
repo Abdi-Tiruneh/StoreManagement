@@ -2,6 +2,7 @@ package StoreManagement.itemManagement.item.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -16,10 +17,13 @@ public class ItemRegistrationReq {
     @Size(min = 10, message = "Description must be at least 10 characters")
     private String description;
 
+    @NotNull(message = "price is required")
+    @Positive(message = "Price must be greater than 0")
     private BigDecimal price;
 
     @NotNull(message = "Initial Quantity is required")
-    private int initialQuantity;
+    @Positive(message = "Initial Quantity must be greater than 0")
+    private Integer initialQuantity;
 
     @NotNull(message = "Category is required")
     private Integer categoryId;
