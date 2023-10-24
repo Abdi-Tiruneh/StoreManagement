@@ -1,9 +1,11 @@
 package StoreManagement.purchaseOrderManagement.supplier;
 
+import StoreManagement.purchaseOrderManagement.supplier.dto.AssignToCategoryReq;
 import StoreManagement.purchaseOrderManagement.supplier.dto.SupplierRegReq;
 import StoreManagement.purchaseOrderManagement.supplier.dto.SupplierUpdateReq;
 import StoreManagement.utils.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/supplier")
+@RequestMapping("/api/v1/suppliers")
 @Tag(name = "Supplier API.")
 public class SupplierController {
     private final SupplierService supplierService;
@@ -31,13 +33,18 @@ public class SupplierController {
     }
 
     @PostMapping
-    public ResponseEntity<Supplier> createSupplier(@RequestBody SupplierRegReq supplierRegReq) {
+    public ResponseEntity<Supplier> createSupplier(@RequestBody @Valid SupplierRegReq supplierRegReq) {
         return ResponseEntity.status(HttpStatus.CREATED).body(supplierService.createSupplier(supplierRegReq));
     }
 
     @PutMapping("/{supplierId}")
-    public ResponseEntity<Supplier> updateSupplier(@PathVariable Long supplierId, @RequestBody SupplierUpdateReq updateReq) {
+    public ResponseEntity<Supplier> updateSupplier(@PathVariable Long supplierId, @RequestBody @Valid SupplierUpdateReq updateReq) {
         return ResponseEntity.ok(supplierService.updateSupplier(supplierId, updateReq));
+    }
+
+    @PutMapping("/assign-to-category")
+    public ResponseEntity<Supplier> assignSupplierToCategory(@RequestBody @Valid AssignToCategoryReq assignToCategoryReq) {
+        return ResponseEntity.ok(supplierService.assignSupplierToCategory(assignToCategoryReq));
     }
 
     @DeleteMapping("/{supplierId}")

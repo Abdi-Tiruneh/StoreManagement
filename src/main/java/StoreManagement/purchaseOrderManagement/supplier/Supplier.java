@@ -1,11 +1,13 @@
 package StoreManagement.purchaseOrderManagement.supplier;
 
+import StoreManagement.itemManagement.category.Category;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "suppliers")
@@ -21,6 +23,9 @@ public class Supplier {
 
     @Column(nullable = false)
     private String supplierAddress;
+
+    @OneToMany(mappedBy = "supplier")
+    private List<Category> categories;
 
     @CreationTimestamp
     @Column(name = "created_at")

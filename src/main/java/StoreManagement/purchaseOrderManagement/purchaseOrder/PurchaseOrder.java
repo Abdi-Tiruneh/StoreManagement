@@ -1,5 +1,7 @@
 package StoreManagement.purchaseOrderManagement.purchaseOrder;
 
+import StoreManagement.itemManagement.item.Item;
+import StoreManagement.purchaseOrderManagement.supplier.Supplier;
 import StoreManagement.storeManagement.Store;
 import StoreManagement.userManagement.user.Users;
 import jakarta.persistence.*;
@@ -15,16 +17,26 @@ import java.time.LocalDateTime;
 public class PurchaseOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
-    private Long orderId;
+    @Column(name = "purchaseOrder_id")
+    private Long purchaseOrderId;
 
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
 
     @ManyToOne
-    @JoinColumn(name = "created_by")
-    private Users createdBy;
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @ManyToOne
+    @JoinColumn(name = "supplier_id")
+    private Supplier supplier;
+
+    @ManyToOne
+    @JoinColumn(name = "ordered_by")
+    private Users orderedBy;
+
+    private int quantity;
 
     @Column(nullable = false, unique = true)
     private String orderNumber;

@@ -1,18 +1,24 @@
 package StoreManagement.purchaseOrderManagement.supplier;
 
 import StoreManagement.exceptions.customExceptions.ResourceNotFoundException;
+import StoreManagement.itemManagement.category.Category;
+import StoreManagement.itemManagement.category.CategoryService;
+import StoreManagement.purchaseOrderManagement.supplier.dto.AssignToCategoryReq;
 import StoreManagement.purchaseOrderManagement.supplier.dto.SupplierRegReq;
 import StoreManagement.purchaseOrderManagement.supplier.dto.SupplierUpdateReq;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class SupplierServiceImpl implements SupplierService {
     private final SupplierRepository supplierRepository;
+    private final CategoryService categoryService;
 
-    public SupplierServiceImpl(SupplierRepository supplierRepository) {
+    public SupplierServiceImpl(SupplierRepository supplierRepository, CategoryService categoryService) {
         this.supplierRepository = supplierRepository;
+        this.categoryService = categoryService;
     }
 
     @Override
@@ -46,6 +52,17 @@ public class SupplierServiceImpl implements SupplierService {
             existingSupplier.setSupplierAddress(updateReq.getSupplierAddress());
 
         return supplierRepository.save(existingSupplier);
+    }
+
+    @Override
+    @Transactional
+    public Supplier assignSupplierToCategory(AssignToCategoryReq assignToCategoryReq) {
+        Supplier supplier = getSupplierById(assignToCategoryReq.getSupplierId());
+        Category category = categoryService.getCategoryById(assignToCategoryReq.getCategoryId());
+
+        category.setSupplier(supplier);
+        categoryService.utilSaveCategory(category);
+        return supplier;
     }
 
     @Override
