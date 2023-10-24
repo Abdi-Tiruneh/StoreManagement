@@ -1,5 +1,6 @@
 package StoreManagement.inventoryManagement;
 
+import StoreManagement.inventoryManagement.dto.ItemSaleFromInventoryReq;
 import StoreManagement.inventoryManagement.dto.StoreInventoryReq;
 import StoreManagement.inventoryManagement.dto.StoreInventoryResponse;
 import StoreManagement.inventoryManagement.dto.StoreInventoryUpdateReq;
@@ -38,9 +39,15 @@ public class StoreInventoryController {
     }
 
     @PutMapping("/{storeInventoryId}")
-    public ResponseEntity<StoreInventoryResponse> updateStoreInventory(@PathVariable Long storeInventoryId, @RequestBody StoreInventoryUpdateReq updateReq) {
-        return ResponseEntity.ok(storeInventoryService.updateStoreInventoryQuantity(storeInventoryId, updateReq));
+    public ResponseEntity<StoreInventoryResponse> updateStoreInventory(@PathVariable Long storeInventoryId, @RequestBody @Valid StoreInventoryUpdateReq updateReq) {
+        return ResponseEntity.ok(storeInventoryService.adjustInventoryQuantityAfterPurchaseOrder(storeInventoryId, updateReq));
     }
+
+    @PutMapping("/{storeInventoryId}/process-item-sale")
+    public ResponseEntity<StoreInventoryResponse> processItemSaleFromInventory(@PathVariable Long storeInventoryId, @RequestBody @Valid ItemSaleFromInventoryReq itemSaleFromInventoryReq) {
+        return ResponseEntity.ok(storeInventoryService.processItemSaleFromInventory(storeInventoryId, itemSaleFromInventoryReq));
+    }
+
 
     @DeleteMapping("/{itemId}")
     public ResponseEntity<ApiResponse> deleteItem(@PathVariable Long itemId) {

@@ -2,6 +2,7 @@ package StoreManagement.inventoryManagement;
 
 import StoreManagement.itemManagement.item.Item;
 import StoreManagement.storeManagement.Store;
+import StoreManagement.userManagement.user.Users;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,6 +34,10 @@ public class StoreInventory {
 
     @Column(name = "max_threshold")
     private int maxThreshold;
+
+    @ManyToOne
+    @JoinColumn(name = "added_by")
+    private Users addedBy;
 
     @CreationTimestamp
     @Column(name = "created_at")
