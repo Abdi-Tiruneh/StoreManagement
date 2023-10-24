@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class PurchaseOrderUpdateReq {
 
-    @Positive(message = "Initial Quantity must be greater than 0")
+    @Positive(message = "Quantity must be greater than 0")
     private Integer quantity;
 }

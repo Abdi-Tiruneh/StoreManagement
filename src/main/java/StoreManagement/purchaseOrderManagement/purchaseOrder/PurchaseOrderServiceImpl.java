@@ -13,6 +13,7 @@ import StoreManagement.purchaseOrderManagement.supplier.Supplier;
 import StoreManagement.storeManagement.Store;
 import StoreManagement.storeManagement.StoreService;
 import StoreManagement.utils.CurrentlyLoggedInUser;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -74,6 +75,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
+    @Transactional
     public PurchaseOrderResponse updatePurchaseOrderStatus(Long orderId, String status) {
         // Check if the provided status is valid
         if (!("PENDING".equals(status) || "APPROVED".equals(status) || "DELIVERED".equals(status)))
@@ -101,7 +103,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         Long itemId = purchaseOrder.getItem().getItemId();
         Integer quantity = purchaseOrder.getQuantity();
 
-        storeInventoryService.updateStoreInventoryQuantity(storeId, itemId, quantity);
+        storeInventoryService.adjustInventoryQuantityAfterPurchaseOrder(storeId, itemId, quantity);
     }
 
     @Override
@@ -126,7 +128,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         PurchaseOrder existingPurchaseOrder = utilGetPurchaseOrderById(orderId);
         purchaseOrderRepository.delete(existingPurchaseOrder);
     }
-
 
     private PurchaseOrder utilGetPurchaseOrderById(Long orderId) {
         return purchaseOrderRepository.findById(orderId)
