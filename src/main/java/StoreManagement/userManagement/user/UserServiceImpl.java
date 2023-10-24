@@ -1,14 +1,15 @@
 package StoreManagement.userManagement.user;
 
 import StoreManagement.exceptions.customExceptions.ResourceAlreadyExistsException;
-import StoreManagement.userManagement.dto.*;
+import StoreManagement.userManagement.dto.UserMapper;
+import StoreManagement.userManagement.dto.UserRegistrationReq;
+import StoreManagement.userManagement.dto.UserResponse;
+import StoreManagement.userManagement.dto.UserUpdateReq;
 import StoreManagement.userManagement.role.Role;
 import StoreManagement.userManagement.role.RoleService;
-import StoreManagement.utils.ApiResponse;
 import StoreManagement.utils.CurrentlyLoggedInUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse editUser(UserUpdateReq updateReq) {
-        Users user = currentlyLoggedInUser.getUser();
+        Users user = userUtils.getById(updateReq.getUserId());
 
         if (updateReq.getFullName() != null)
             user.setFullName(updateReq.getFullName());

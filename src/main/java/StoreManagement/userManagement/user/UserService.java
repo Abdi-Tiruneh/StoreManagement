@@ -1,11 +1,8 @@
 package StoreManagement.userManagement.user;
 
-import StoreManagement.userManagement.dto.UserUpdateReq;
-import StoreManagement.userManagement.dto.ChangePassword;
 import StoreManagement.userManagement.dto.UserRegistrationReq;
 import StoreManagement.userManagement.dto.UserResponse;
-import StoreManagement.utils.ApiResponse;
-import org.springframework.http.ResponseEntity;
+import StoreManagement.userManagement.dto.UserUpdateReq;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
