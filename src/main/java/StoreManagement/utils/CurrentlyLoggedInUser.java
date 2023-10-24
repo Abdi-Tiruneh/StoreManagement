@@ -24,7 +24,7 @@ public class CurrentlyLoggedInUser {
             throw new UnauthorizedException("Access denied. Please provide a valid authentication token.");
 
         return userRepository.findByUsername(authentication.getName())
-                .orElseThrow(() -> new ResourceNotFoundException("Please login with your email and try again."));
+                .orElseThrow(() -> new ResourceNotFoundException("Please login again and try."));
         // If a user changes his or her email address, he or she must log in again.
     }
 }
