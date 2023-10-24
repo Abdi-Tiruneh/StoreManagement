@@ -12,6 +12,7 @@ public interface CategoryService {
     Category createCategory(CategoryReq categoryReq);
 
     Category updateCategory(Integer categoryId, CategoryReq categoryReq);
+    Category utilSaveCategory(Category category);
 
     void deleteCategory(Integer categoryId);
 }

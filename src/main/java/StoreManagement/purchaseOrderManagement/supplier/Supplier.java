@@ -1,6 +1,7 @@
 package StoreManagement.purchaseOrderManagement.supplier;
 
 import StoreManagement.itemManagement.category.Category;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "suppliers")
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

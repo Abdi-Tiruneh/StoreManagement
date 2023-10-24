@@ -58,6 +58,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public Category utilSaveCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    @Override
     public void deleteCategory(Integer categoryId) {
         if (!categoryRepository.existsById(categoryId))
             throw new ResourceNotFoundException("Category not found with ID: " + categoryId);

@@ -1,5 +1,7 @@
 package StoreManagement.itemManagement.category;
 
+import StoreManagement.purchaseOrderManagement.supplier.Supplier;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,6 +20,11 @@ public class Category {
 
     @Column(name = "category_name", nullable = false, unique = true)
     private String categoryName;
+
+    @ManyToOne
+    @JoinColumn(name = "supplier_id")
+    @JsonIgnore
+    private Supplier supplier;
 
     @CreationTimestamp
     @Column(name = "created_at")
