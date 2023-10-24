@@ -71,8 +71,6 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public List<StoreResponse> getAllStores() {
         List<Store> stores = storeRepository.findAll(Sort.by(Sort.Order.asc("storeId")));
-        if (stores.isEmpty())
-            throw new ResourceNotFoundException("No stores found.");
 
         return stores.stream().
                 map(StoreMapper::toStoreResponse)

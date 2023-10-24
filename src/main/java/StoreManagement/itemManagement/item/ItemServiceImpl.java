@@ -63,8 +63,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemResponse> getAllItems() {
         List<Item> items = itemRepository.findAll(Sort.by(Sort.Order.asc("itemId")));
-        if (items.isEmpty())
-            throw new ResourceNotFoundException("No Items found.");
 
         return items.stream()
                 .map(ItemMapper::toItemResponse)

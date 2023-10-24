@@ -108,21 +108,17 @@ public class StoreInventoryServiceImpl implements StoreInventoryService {
     @Override
     public List<StoreInventoryResponse> getAllInventoryByStoreId(Long storeId) {
         List<StoreInventory> storeInventoryItems = storeInventoryRepository.findByStoreStoreId(storeId);
-        if (storeInventoryItems.isEmpty())
-            throw new ResourceNotFoundException("No inventory records were found for this store.");
 
         return storeInventoryItems.stream()
                 .map(StoreInventoryMapper::toStoreInventoryResponse)
                 .toList();
     }
 
-
     @Override
     public StoreInventoryResponse getStoreInventoryById(Long storeInventoryId) {
         StoreInventory storeInventory = retrieveStoreInventory(storeInventoryId);
         return StoreInventoryMapper.toStoreInventoryResponse(storeInventory);
     }
-
 
     @Override
     public void deleteStoreInventory(Long storeInventoryId) {

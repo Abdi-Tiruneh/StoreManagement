@@ -18,11 +18,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> getAllCategories() {
-        List<Category> categories = categoryRepository.findAll(Sort.by(Sort.Order.asc("categoryName")));
-        if (categories.isEmpty())
-            throw new ResourceNotFoundException("No Categories found.");
-
-        return categories;
+       return categoryRepository.findAll(Sort.by(Sort.Order.asc("categoryName")));
     }
 
     @Override
