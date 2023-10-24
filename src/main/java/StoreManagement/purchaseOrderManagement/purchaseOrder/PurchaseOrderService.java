@@ -1,13 +1,15 @@
 package StoreManagement.purchaseOrderManagement.purchaseOrder;
 
 import StoreManagement.purchaseOrderManagement.purchaseOrder.dto.PurchaseOrderRequest;
+import StoreManagement.purchaseOrderManagement.purchaseOrder.dto.PurchaseOrderResponse;
+import StoreManagement.purchaseOrderManagement.purchaseOrder.dto.PurchaseOrderUpdateReq;
 
 import java.util.List;
 
 public interface PurchaseOrderService {
-    List<PurchaseOrder> getAllPurchaseOrders();
-    PurchaseOrder getPurchaseOrderById(Long orderId);
-    PurchaseOrder createPurchaseOrder(PurchaseOrderRequest purchaseOrderRequest);
-    PurchaseOrder updatePurchaseOrder(Long orderId, PurchaseOrderRequest purchaseOrderRequest);
+    List<PurchaseOrderResponse> getAllPurchaseOrders();
+    PurchaseOrderResponse getPurchaseOrderById(Long orderId);
+    PurchaseOrderResponse createPurchaseOrder(PurchaseOrderRequest purchaseOrderRequest);
+    PurchaseOrderResponse updatePurchaseOrder(Long orderId, PurchaseOrderUpdateReq updateReq);
     void deletePurchaseOrder(Long orderId);
 }

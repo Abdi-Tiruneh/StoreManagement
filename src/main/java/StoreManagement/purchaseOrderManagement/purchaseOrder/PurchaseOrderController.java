@@ -1,6 +1,8 @@
 package StoreManagement.purchaseOrderManagement.purchaseOrder;
 
 import StoreManagement.purchaseOrderManagement.purchaseOrder.dto.PurchaseOrderRequest;
+import StoreManagement.purchaseOrderManagement.purchaseOrder.dto.PurchaseOrderResponse;
+import StoreManagement.purchaseOrderManagement.purchaseOrder.dto.PurchaseOrderUpdateReq;
 import StoreManagement.utils.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -21,23 +23,23 @@ public class PurchaseOrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PurchaseOrder>> getAllPurchaseOrders() {
+    public ResponseEntity<List<PurchaseOrderResponse>> getAllPurchaseOrders() {
         return ResponseEntity.ok(purchaseOrderService.getAllPurchaseOrders());
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<PurchaseOrder> getPurchaseOrderById(@PathVariable Long orderId) {
+    public ResponseEntity<PurchaseOrderResponse> getPurchaseOrderById(@PathVariable Long orderId) {
         return ResponseEntity.ok(purchaseOrderService.getPurchaseOrderById(orderId));
     }
 
     @PostMapping
-    public ResponseEntity<PurchaseOrder> createPurchaseOrder(@RequestBody @Valid PurchaseOrderRequest purchaseOrderRequest) {
+    public ResponseEntity<PurchaseOrderResponse> createPurchaseOrder(@RequestBody @Valid PurchaseOrderRequest purchaseOrderRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(purchaseOrderService.createPurchaseOrder(purchaseOrderRequest));
     }
 
     @PutMapping("/{orderId}")
-    public ResponseEntity<PurchaseOrder> updatePurchaseOrder(@PathVariable Long orderId, @RequestBody PurchaseOrderRequest purchaseOrderRequest) {
-        return ResponseEntity.ok(purchaseOrderService.updatePurchaseOrder(orderId, purchaseOrderRequest));
+    public ResponseEntity<PurchaseOrderResponse> updatePurchaseOrder(@PathVariable Long orderId, @RequestBody @Valid PurchaseOrderUpdateReq updateReq) {
+        return ResponseEntity.ok(purchaseOrderService.updatePurchaseOrder(orderId, updateReq));
     }
 
     @DeleteMapping("/{orderId}")

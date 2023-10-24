@@ -4,7 +4,10 @@ import StoreManagement.exceptions.customExceptions.BadRequestException;
 import StoreManagement.exceptions.customExceptions.ResourceNotFoundException;
 import StoreManagement.itemManagement.item.Item;
 import StoreManagement.itemManagement.item.ItemService;
+import StoreManagement.purchaseOrderManagement.purchaseOrder.dto.PurchaseOrderMapper;
 import StoreManagement.purchaseOrderManagement.purchaseOrder.dto.PurchaseOrderRequest;
+import StoreManagement.purchaseOrderManagement.purchaseOrder.dto.PurchaseOrderResponse;
+import StoreManagement.purchaseOrderManagement.purchaseOrder.dto.PurchaseOrderUpdateReq;
 import StoreManagement.purchaseOrderManagement.supplier.Supplier;
 import StoreManagement.storeManagement.Store;
 import StoreManagement.storeManagement.StoreService;
@@ -26,7 +29,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private final ItemService itemService;
 
     @Override
-    public PurchaseOrder createPurchaseOrder(PurchaseOrderRequest purchaseOrderRequest) {
+    public PurchaseOrderResponse createPurchaseOrder(PurchaseOrderRequest purchaseOrderRequest) {
         // Retrieve the store and item based on the request.
         Store store = storeService.utilGetStoreById(purchaseOrderRequest.getStoreId());
         Item item = itemService.utilGetItemById(purchaseOrderRequest.getItemId());
@@ -47,37 +50,52 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         purchaseOrder.setPurchaseOrderStatus(PurchaseOrderStatus.PENDING);
 
         // Save the purchase order in the repository.
-        return purchaseOrderRepository.save(purchaseOrder);
+        purchaseOrder = purchaseOrderRepository.save(purchaseOrder);
+        return PurchaseOrderMapper.toPurchaseOrderResponse(purchaseOrder);
     }
 
     @Override
-    public PurchaseOrder updatePurchaseOrder(Long orderId, PurchaseOrderRequest updatedPurchaseOrder) {
-        PurchaseOrder existingPurchaseOrder = getPurchaseOrderById(orderId);
+    public PurchaseOrderResponse updatePurchaseOrder(Long orderId, PurchaseOrderUpdateReq updateReq) {
+        PurchaseOrder purchaseOrder = utilGetPurchaseOrderById(orderId);
 
-//        // Update the existing entity with the new data
-//        existingPurchaseOrder.setStore(updatedPurchaseOrder.get());
-//        existingPurchaseOrder.setCreatedBy(updatedPurchaseOrder.getCreatedBy());
-//        existingPurchaseOrder.setOrderNumber(updatedPurchaseOrder.getOrderNumber());
-//        existingPurchaseOrder.setPurchaseOrderStatus(updatedPurchaseOrder.getPurchaseOrderStatus());
+        if (purchaseOrder.getPurchaseOrderStatus() != PurchaseOrderStatus.PENDING)
+            throw new BadRequestException("You can only update purchase Order only if its in pending state");
 
-        return purchaseOrderRepository.save(existingPurchaseOrder);
+        if (updateReq.getQuantity() == null || purchaseOrder.getQuantity() == updateReq.getQuantity())
+            return PurchaseOrderMapper.toPurchaseOrderResponse(purchaseOrder);
+
+        purchaseOrder.setQuantity(updateReq.getQuantity());
+        purchaseOrder = purchaseOrderRepository.save(purchaseOrder);
+        return PurchaseOrderMapper.toPurchaseOrderResponse(purchaseOrder);
     }
 
     @Override
-    public List<PurchaseOrder> getAllPurchaseOrders() {
-        return purchaseOrderRepository.findAll();
+    public List<PurchaseOrderResponse> getAllPurchaseOrders() {
+        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findAll();
+
+        return purchaseOrders.stream()
+                .map(PurchaseOrderMapper::toPurchaseOrderResponse)
+                .toList();
     }
 
     @Override
-    public PurchaseOrder getPurchaseOrderById(Long orderId) {
-        return purchaseOrderRepository.findById(orderId)
+    public PurchaseOrderResponse getPurchaseOrderById(Long orderId) {
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Purchase Order not found with ID: " + orderId));
+
+        return PurchaseOrderMapper.toPurchaseOrderResponse(purchaseOrder);
     }
 
     @Override
     public void deletePurchaseOrder(Long orderId) {
-        PurchaseOrder existingPurchaseOrder = getPurchaseOrderById(orderId);
+        PurchaseOrder existingPurchaseOrder = utilGetPurchaseOrderById(orderId);
         purchaseOrderRepository.delete(existingPurchaseOrder);
+    }
+
+
+    private PurchaseOrder utilGetPurchaseOrderById(Long orderId) {
+        return purchaseOrderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Purchase Order not found with ID: " + orderId));
     }
 
     private String generateUniquePurchaseOrderNumber() {
