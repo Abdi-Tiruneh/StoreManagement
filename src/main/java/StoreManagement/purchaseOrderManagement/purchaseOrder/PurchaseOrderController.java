@@ -42,6 +42,12 @@ public class PurchaseOrderController {
         return ResponseEntity.ok(purchaseOrderService.updatePurchaseOrder(orderId, updateReq));
     }
 
+    @PutMapping("/{orderId}/status")
+    public ResponseEntity<PurchaseOrderResponse> updatePurchaseOrderStatus(
+            @PathVariable Long orderId, @RequestParam String status) {
+        return ResponseEntity.ok(purchaseOrderService.updatePurchaseOrderStatus(orderId,status));
+    }
+
     @DeleteMapping("/{orderId}")
     public ResponseEntity<ApiResponse> deletePurchaseOrder(@PathVariable Long orderId) {
         purchaseOrderService.deletePurchaseOrder(orderId);

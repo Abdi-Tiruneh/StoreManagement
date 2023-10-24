@@ -11,5 +11,8 @@ public interface PurchaseOrderService {
     PurchaseOrderResponse getPurchaseOrderById(Long orderId);
     PurchaseOrderResponse createPurchaseOrder(PurchaseOrderRequest purchaseOrderRequest);
     PurchaseOrderResponse updatePurchaseOrder(Long orderId, PurchaseOrderUpdateReq updateReq);
+
+    PurchaseOrderResponse updatePurchaseOrderStatus(Long orderId,String status);
+
     void deletePurchaseOrder(Long orderId);
 }

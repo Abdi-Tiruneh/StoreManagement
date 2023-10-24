@@ -2,6 +2,7 @@ package StoreManagement.purchaseOrderManagement.purchaseOrder;
 
 import StoreManagement.exceptions.customExceptions.BadRequestException;
 import StoreManagement.exceptions.customExceptions.ResourceNotFoundException;
+import StoreManagement.inventoryManagement.StoreInventoryService;
 import StoreManagement.itemManagement.item.Item;
 import StoreManagement.itemManagement.item.ItemService;
 import StoreManagement.purchaseOrderManagement.purchaseOrder.dto.PurchaseOrderMapper;
@@ -27,6 +28,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private final CurrentlyLoggedInUser loggedInUser;
     private final StoreService storeService;
     private final ItemService itemService;
+    private final StoreInventoryService storeInventoryService;
 
     @Override
     public PurchaseOrderResponse createPurchaseOrder(PurchaseOrderRequest purchaseOrderRequest) {
@@ -55,18 +57,51 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
-    public PurchaseOrderResponse updatePurchaseOrder(Long orderId, PurchaseOrderUpdateReq updateReq) {
+    public PurchaseOrderResponse updatePurchaseOrder(Long orderId, PurchaseOrderUpdateReq updateRequest) {
         PurchaseOrder purchaseOrder = utilGetPurchaseOrderById(orderId);
 
+        // Check if the purchase order is in a modifiable state (e.g., PENDING).
         if (purchaseOrder.getPurchaseOrderStatus() != PurchaseOrderStatus.PENDING)
-            throw new BadRequestException("You can only update purchase Order only if its in pending state");
+            throw new BadRequestException("Unable to update the purchase order as it is not in the PENDING state.");
 
-        if (updateReq.getQuantity() == null || purchaseOrder.getQuantity() == updateReq.getQuantity())
-            return PurchaseOrderMapper.toPurchaseOrderResponse(purchaseOrder);
+        // Check if the new quantity is different from the current quantity.
+        if (updateRequest.getQuantity() != null && !updateRequest.getQuantity().equals(purchaseOrder.getQuantity())) {
+            purchaseOrder.setQuantity(updateRequest.getQuantity());
+            purchaseOrder = purchaseOrderRepository.save(purchaseOrder);
+        }
 
-        purchaseOrder.setQuantity(updateReq.getQuantity());
-        purchaseOrder = purchaseOrderRepository.save(purchaseOrder);
         return PurchaseOrderMapper.toPurchaseOrderResponse(purchaseOrder);
+    }
+
+    @Override
+    public PurchaseOrderResponse updatePurchaseOrderStatus(Long orderId, String status) {
+        // Check if the provided status is valid
+        if (!("PENDING".equals(status) || "APPROVED".equals(status) || "DELIVERED".equals(status)))
+            throw new BadRequestException("Invalid status. Status should be one of: PENDING, APPROVED, DELIVERED");
+
+        PurchaseOrder purchaseOrder = utilGetPurchaseOrderById(orderId);
+        // Check if the purchase order is already delivered
+        if (purchaseOrder.getPurchaseOrderStatus() == PurchaseOrderStatus.DELIVERED)
+            throw new BadRequestException("This purchase order has already been marked as delivered.");
+
+        PurchaseOrderStatus newStatus = PurchaseOrderStatus.getEnum(status.toUpperCase());
+
+        if (purchaseOrder.getPurchaseOrderStatus() != newStatus) {
+            purchaseOrder.setPurchaseOrderStatus(newStatus);
+            purchaseOrder = purchaseOrderRepository.save(purchaseOrder);
+
+            if (newStatus == PurchaseOrderStatus.DELIVERED)
+                updateStoreInventory(purchaseOrder);
+        }
+        return PurchaseOrderMapper.toPurchaseOrderResponse(purchaseOrder);
+    }
+
+    private void updateStoreInventory(PurchaseOrder purchaseOrder) {
+        Long storeId = purchaseOrder.getStore().getStoreId();
+        Long itemId = purchaseOrder.getItem().getItemId();
+        Integer quantity = purchaseOrder.getQuantity();
+
+        storeInventoryService.updateStoreInventoryQuantity(storeId, itemId, quantity);
     }
 
     @Override
