@@ -9,7 +9,9 @@ import java.util.List;
 public interface StoreInventoryService {
     StoreInventoryResponse createStoreInventory(StoreInventoryReq storeInventoryReq);
 
-    StoreInventoryResponse updateStoreInventory(Long storeInventoryId, StoreInventoryUpdateReq updateReq);
+    StoreInventoryResponse updateStoreInventoryQuantity(Long storeInventoryId, StoreInventoryUpdateReq updateReq);
+
+    void updateStoreInventoryQuantity(Long storeId, Long itemId, Integer quantity);
 
     List<StoreInventoryResponse> getAllInventoryByStoreId(Long storeId);
 

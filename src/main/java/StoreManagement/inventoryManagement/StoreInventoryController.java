@@ -39,7 +39,7 @@ public class StoreInventoryController {
 
     @PutMapping("/{storeInventoryId}")
     public ResponseEntity<StoreInventoryResponse> updateStoreInventory(@PathVariable Long storeInventoryId, @RequestBody StoreInventoryUpdateReq updateReq) {
-        return ResponseEntity.ok(storeInventoryService.updateStoreInventory(storeInventoryId, updateReq));
+        return ResponseEntity.ok(storeInventoryService.updateStoreInventoryQuantity(storeInventoryId, updateReq));
     }
 
     @DeleteMapping("/{itemId}")

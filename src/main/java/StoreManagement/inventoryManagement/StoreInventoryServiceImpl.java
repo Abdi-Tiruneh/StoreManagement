@@ -30,7 +30,7 @@ public class StoreInventoryServiceImpl implements StoreInventoryService {
         if (storeInventoryReq.getMaxThreshold() < storeInventoryReq.getMinThreshold())
             throw new BadRequestException("Max threshold must be greater than or equal to min threshold");
 
-        if (storeInventoryRepository.existsByStoreStoreIdAndItemItemId(storeId, itemId))
+        if (storeInventoryRepository.findByStoreStoreIdAndItemItemId(storeId, itemId).isPresent())
             throw new ResourceAlreadyExistsException("The item has already been added to the store's inventory.");
 
         Store store = storeService.utilGetStoreById(storeId);
@@ -49,7 +49,7 @@ public class StoreInventoryServiceImpl implements StoreInventoryService {
 
     //todo: check min and max conditions
     @Override
-    public StoreInventoryResponse updateStoreInventory(Long storeInventoryId, StoreInventoryUpdateReq updateReq) {
+    public StoreInventoryResponse updateStoreInventoryQuantity(Long storeInventoryId, StoreInventoryUpdateReq updateReq) {
         StoreInventory storeInventory = utilGetStoreInventoryById(storeInventoryId);
 
         if (updateReq.getQuantity() != null)
@@ -63,6 +63,15 @@ public class StoreInventoryServiceImpl implements StoreInventoryService {
 
         storeInventory = storeInventoryRepository.save(storeInventory);
         return StoreInventoryMapper.toStoreInventoryResponse(storeInventory);
+    }
+
+    @Override
+    public void updateStoreInventoryQuantity(Long storeId, Long itemId, Integer quantity) {
+        StoreInventory storeInventory = storeInventoryRepository
+                .findByStoreStoreIdAndItemItemId(storeId, itemId).get();
+
+        storeInventory.setQuantity(storeInventory.getQuantity() + quantity);
+        storeInventoryRepository.save(storeInventory);
     }
 
     @Override
