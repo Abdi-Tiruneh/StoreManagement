@@ -1,5 +1,6 @@
 package StoreManagement.storeManagement.dto;
 
+import StoreManagement.storeManagement.StoreType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,7 @@ public class StoreResponse {
 
     private String contactInformation;
 
-    private String storeType;
+    private StoreType storeType;
 
     private LocalDate openingDate;
 

@@ -27,7 +27,8 @@ public class Item {
 
     private BigDecimal price;
 
-    private int initialQuantity;
+    @Column(nullable = false)
+    private Integer initialQuantity;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

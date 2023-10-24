@@ -1,6 +1,7 @@
 package StoreManagement.itemManagement.item.dto;
 
 import StoreManagement.userManagement.dto.MinUserResponse;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemResponse {
 
     private Long itemId;
@@ -19,7 +21,7 @@ public class ItemResponse {
 
     private BigDecimal price;
 
-    private int initialQuantity;
+    private Integer initialQuantity;
 
     private String category;
 

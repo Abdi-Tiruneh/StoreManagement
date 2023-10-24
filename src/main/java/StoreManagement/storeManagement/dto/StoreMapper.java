@@ -9,7 +9,7 @@ public class StoreMapper {
                 .storeName(store.getStoreName())
                 .location(store.getLocation())
                 .contactInformation(store.getContactInformation())
-                .storeType(store.getStoreType().name())
+                .storeType(store.getStoreType())
                 .openingDate(store.getOpeningDate())
                 .createdAt(store.getCreatedAt())
                 .createdBy(store.getCreatedBy().getFullName())
