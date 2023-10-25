@@ -36,7 +36,7 @@ public class ApplicationRunner {
                 roles = roleRepository.saveAll(roles);
 
                 // Create and save user
-                Users johnDoe = createUser(roles.get(1));
+                Users johnDoe = createUser(roles.get(0));
                 userRepository.save(johnDoe);
 
                 log.info("ApplicationRunner => Preloaded roles and admin user");
