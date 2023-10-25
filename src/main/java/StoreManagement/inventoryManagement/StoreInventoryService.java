@@ -18,10 +18,12 @@ public interface StoreInventoryService {
 
     void monitorInventoryThresholdAndSendNotification(StoreInventory storeInventory);
 
-    List<StoreInventoryResponse> getAllInventoryByStoreId(Long storeId);
+    List<StoreInventoryResponse> getInventoriesByStore(Long storeId);
+
+    List<StoreInventoryResponse> getAllStoreInventory();
 
     StoreInventoryResponse getStoreInventoryById(Long storeInventoryId);
 
-
     void deleteStoreInventory(Long storeInventoryId);
+
 }

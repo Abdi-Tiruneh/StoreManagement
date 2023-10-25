@@ -14,6 +14,7 @@ import StoreManagement.userManagement.user.Users;
 import StoreManagement.utils.CurrentlyLoggedInUser;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -115,9 +116,19 @@ public class StoreInventoryServiceImpl implements StoreInventoryService {
         emailService.send(recipientEmail, emailBody, emailSubject);
     }
 
+
     @Override
-    public List<StoreInventoryResponse> getAllInventoryByStoreId(Long storeId) {
+    public List<StoreInventoryResponse> getInventoriesByStore(Long storeId) {
         List<StoreInventory> storeInventoryItems = storeInventoryRepository.findByStoreStoreId(storeId);
+
+        return storeInventoryItems.stream()
+                .map(StoreInventoryMapper::toStoreInventoryResponse)
+                .toList();
+    }
+
+    @Override
+    public List<StoreInventoryResponse> getAllStoreInventory() {
+        List<StoreInventory> storeInventoryItems = storeInventoryRepository.findAll(Sort.by(Sort.Order.asc("storeInventoryId")));
 
         return storeInventoryItems.stream()
                 .map(StoreInventoryMapper::toStoreInventoryResponse)

@@ -24,8 +24,13 @@ public class StoreInventoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StoreInventoryResponse>> getAllStoreInventory(@RequestParam Long storeId) {
-        return ResponseEntity.ok(storeInventoryService.getAllInventoryByStoreId(storeId));
+    public ResponseEntity<List<StoreInventoryResponse>> getAllStoreInventory() {
+        return ResponseEntity.ok(storeInventoryService.getAllStoreInventory());
+    }
+
+    @GetMapping("/by-store/{storeId}")
+    public ResponseEntity<List<StoreInventoryResponse>> getInventoriesByStore(@PathVariable Long storeId) {
+        return ResponseEntity.ok(storeInventoryService.getInventoriesByStore(storeId));
     }
 
     @GetMapping("/{storeInventoryId}")
