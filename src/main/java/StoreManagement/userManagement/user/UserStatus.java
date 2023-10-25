@@ -2,7 +2,6 @@ package StoreManagement.userManagement.user;
 
 public enum UserStatus {
     ACTIVE("Active", "The user account is active and in good standing."),
-    PENDING_APPROVAL("Pending Approval", "The user account is pending administrative approval."),
     SUSPENDED("Suspended", "The user account is temporarily suspended."),
     BANNED("Banned", "The user account is permanently banned.");
 

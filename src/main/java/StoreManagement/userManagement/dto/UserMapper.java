@@ -8,7 +8,7 @@ public class UserMapper {
                 .id(user.getId())
                 .username(user.getUsername())
                 .fullName(user.getFullName())
-                .email(user.getUsername())
+                .email(user.getEmail())
                 .role(user.getRole().getRoleName())
                 .userStatus(user.getUserStatus())
                 .lastLogin(user.getLastLogin())
