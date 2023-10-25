@@ -1,23 +1,11 @@
 package StoreManagement.userManagement.user;
 
 public enum UserStatus {
-    ACTIVE("Active", "The user account is active and in good standing."),
-    SUSPENDED("Suspended", "The user account is temporarily suspended."),
-    BANNED("Banned", "The user account is permanently banned.");
+    ACTIVE,
+    SUSPENDED,
+    BANNED;
 
-    private final String displayName;
-    private final String description;
-
-    UserStatus(String displayName, String description) {
-        this.displayName = displayName;
-        this.description = description;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public String getDescription() {
-        return description;
+    public static UserStatus getEnum(String roleName) {
+        return UserStatus.valueOf(roleName.toUpperCase());
     }
 }

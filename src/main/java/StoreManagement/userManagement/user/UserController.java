@@ -47,8 +47,8 @@ public class UserController {
     @PutMapping("/{userId}")
     public ResponseEntity<UserResponse> editOtherUserAccount(
             @PathVariable Long userId,
-            @RequestBody @Valid UserUpdateReq updateReq) {
-        return ResponseEntity.ok(userService.editOtherUserAccount(userId, updateReq));
+            @RequestParam String status) {
+        return ResponseEntity.ok(userService.editOtherUserAccount(userId, status));
     }
 
 //    public ResponseEntity<StoreInventoryResponse> blockUser(@PathVariable Long id) {

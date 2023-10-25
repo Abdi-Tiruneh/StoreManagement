@@ -21,7 +21,7 @@ public interface UserService {
 //
     UserResponse editUser(UserUpdateReq updateReq);
 
-    UserResponse editOtherUserAccount(Long userId, UserUpdateReq updateReq);
+    UserResponse editOtherUserAccount(Long userId, String status);
 //
 //    ResponseEntity<ApiResponse> delete(Long id);
 }

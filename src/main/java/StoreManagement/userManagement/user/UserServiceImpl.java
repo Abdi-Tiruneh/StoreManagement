@@ -1,5 +1,6 @@
 package StoreManagement.userManagement.user;
 
+import StoreManagement.exceptions.customExceptions.BadRequestException;
 import StoreManagement.exceptions.customExceptions.ForbiddenException;
 import StoreManagement.exceptions.customExceptions.ResourceAlreadyExistsException;
 import StoreManagement.userManagement.dto.UserMapper;
@@ -58,14 +59,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponse editOtherUserAccount(Long userId, UserUpdateReq updateReq) {
+    public UserResponse editOtherUserAccount(Long userId, String status) {
         Users loggedInUserUser = currentlyLoggedInUser.getUser();
-
         if (!loggedInUserUser.getRole().getRoleName().equalsIgnoreCase("ADMIN"))
             throw new ForbiddenException("Admin access required.");
 
+        if (!("ACTIVE".equals(status) || "SUSPENDED".equals(status) || "BANNED".equals(status)))
+            throw new BadRequestException("Invalid status. Status should be one of: ACTIVE, SUSPENDED, BANNED");
+
         Users user = userUtils.getById(userId);
-        performUserUpdate(user, updateReq);
+        user.setUserStatus(UserStatus.getEnum(status));
         user = userRepository.save(user);
         return UserMapper.toUserResponse(user);
     }
