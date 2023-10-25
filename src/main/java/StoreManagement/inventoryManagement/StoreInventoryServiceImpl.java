@@ -6,8 +6,11 @@ import StoreManagement.exceptions.customExceptions.ResourceNotFoundException;
 import StoreManagement.inventoryManagement.dto.*;
 import StoreManagement.itemManagement.item.Item;
 import StoreManagement.itemManagement.item.ItemService;
+import StoreManagement.notificationManager.EmailBuilder;
+import StoreManagement.notificationManager.EmailService;
 import StoreManagement.storeManagement.Store;
 import StoreManagement.storeManagement.StoreService;
+import StoreManagement.userManagement.user.Users;
 import StoreManagement.utils.CurrentlyLoggedInUser;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ public class StoreInventoryServiceImpl implements StoreInventoryService {
     private final StoreService storeService;
     private final ItemService itemService;
     private final CurrentlyLoggedInUser currentlyLoggedInUser;
+    private final EmailService emailService;
     @Override
     public StoreInventoryResponse createStoreInventory(StoreInventoryReq storeInventoryReq) {
         Long itemId = storeInventoryReq.getItemId();
@@ -102,7 +106,13 @@ public class StoreInventoryServiceImpl implements StoreInventoryService {
 
     @Override
     public void monitorInventoryThresholdAndSendNotification(StoreInventory storeInventory) {
+        Users user = storeInventory.getAddedBy();
 
+        String recipientEmail = user.getEmail();
+        String emailBody = EmailBuilder.emailBuilderForThresholdNotification(storeInventory);
+        String emailSubject = "Urgent: Store Inventory Threshold Notification";
+
+        emailService.send(recipientEmail, emailBody, emailSubject);
     }
 
     @Override
