@@ -4,14 +4,14 @@ spring:
     name: STORE-MANAGEMENT
 
   # Set the configuration for connecting to the PostgreSQL database
-#  datasource:
-#    url: jdbc:postgresql://localhost:5432/store_management
-#    username: postgres
-#    password: 1313
   datasource:
-    url: jdbc:postgresql://dpg-ckp49ioujous738sam10-a.oregon-postgres.render.com:5432/store_management
-    username: store_management_user
-    password: xilL5aqxoSpjNGa9A3Lrac71JHcfPZuj
+    url: jdbc:postgresql://localhost:5432/store_management
+    username: postgres
+    password: 1313
+  #  datasource:
+  #    url: jdbc:postgresql://dpg-ckp49ioujous738sam10-a.oregon-postgres.render.com:5432/store_management
+  #    username: store_management_user
+  #    password: xilL5aqxoSpjNGa9A3Lrac71JHcfPZuj
 
   # Set the configuration for Hibernate, the ORM framework used by Spring Data JPA
   jpa:
@@ -21,6 +21,19 @@ spring:
     hibernate:
       ddl-auto: update  # Set the strategy for Hibernate to create/update the database schema. Hibernate ddl auto (create, create-drop, validate, update)
     show-sql: true
+
+  # Set the configuration for sending emails
+  mail:
+    host: smtp.gmail.com # SMTP server host
+    port: 587 # SMTP server port
+    username: abditrnhdev@gmail.com # Email account username
+    password: nwyzvgmctkgdrlkx # Email account password
+    properties:
+      mail:
+        smtp:
+          auth: true # Enable SMTP authentication
+          starttls:
+            enable: true # Enable STARTTLS encryption for the SMTP connection
 
 # Set the port number for the web server
 server:
