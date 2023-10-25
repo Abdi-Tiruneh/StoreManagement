@@ -20,6 +20,8 @@ public interface UserService {
 //    StoreInventoryResponse blockUser(Long id);
 //
     UserResponse editUser(UserUpdateReq updateReq);
+
+    UserResponse editOtherUserAccount(Long userId, UserUpdateReq updateReq);
 //
 //    ResponseEntity<ApiResponse> delete(Long id);
 }

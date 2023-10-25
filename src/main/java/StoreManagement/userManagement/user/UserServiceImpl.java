@@ -1,5 +1,6 @@
 package StoreManagement.userManagement.user;
 
+import StoreManagement.exceptions.customExceptions.ForbiddenException;
 import StoreManagement.exceptions.customExceptions.ResourceAlreadyExistsException;
 import StoreManagement.userManagement.dto.UserMapper;
 import StoreManagement.userManagement.dto.UserRegistrationReq;
@@ -45,11 +46,31 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserResponse(savedUser);
     }
 
+
     @Override
     @Transactional
     public UserResponse editUser(UserUpdateReq updateReq) {
-        Users user = userUtils.getById(updateReq.getUserId());
+        Users user = currentlyLoggedInUser.getUser();
+        performUserUpdate(user, updateReq);
+        user = userRepository.save(user);
+        return UserMapper.toUserResponse(user);
+    }
 
+    @Override
+    @Transactional
+    public UserResponse editOtherUserAccount(Long userId, UserUpdateReq updateReq) {
+        Users loggedInUserUser = currentlyLoggedInUser.getUser();
+
+        if (!loggedInUserUser.getRole().getRoleName().equalsIgnoreCase("ADMIN"))
+            throw new ForbiddenException("Admin access required.");
+
+        Users user = userUtils.getById(userId);
+        performUserUpdate(user, updateReq);
+        user = userRepository.save(user);
+        return UserMapper.toUserResponse(user);
+    }
+
+    private void performUserUpdate(Users user, UserUpdateReq updateReq) {
         if (updateReq.getFullName() != null)
             user.setFullName(updateReq.getFullName());
 
@@ -70,10 +91,8 @@ public class UserServiceImpl implements UserService {
 
             user.setUsername(updateReq.getUsername());
         }
-
-        Users savedUser = userRepository.save(user);
-        return UserMapper.toUserResponse(savedUser);
     }
+
 
     @Override
     public UserResponse me() {
