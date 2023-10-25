@@ -2,6 +2,7 @@ package StoreManagement.userManagement.user;
 
 import StoreManagement.userManagement.dto.UserRegistrationReq;
 import StoreManagement.userManagement.dto.UserResponse;
+import StoreManagement.userManagement.dto.UserRoleAndStatusUpdateReq;
 import StoreManagement.userManagement.dto.UserUpdateReq;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -45,10 +46,10 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<UserResponse> editOtherUserAccount(
+    public ResponseEntity<UserResponse> editUserRoleAndStatus(
             @PathVariable Long userId,
-            @RequestParam String status) {
-        return ResponseEntity.ok(userService.editOtherUserAccount(userId, status));
+            @RequestBody UserRoleAndStatusUpdateReq updateReq) {
+        return ResponseEntity.ok(userService.editUserRoleAndStatus(userId, updateReq));
     }
 
 //    public ResponseEntity<StoreInventoryResponse> blockUser(@PathVariable Long id) {

@@ -2,6 +2,7 @@ package StoreManagement.userManagement.user;
 
 import StoreManagement.userManagement.dto.UserRegistrationReq;
 import StoreManagement.userManagement.dto.UserResponse;
+import StoreManagement.userManagement.dto.UserRoleAndStatusUpdateReq;
 import StoreManagement.userManagement.dto.UserUpdateReq;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public interface UserService {
 //
     UserResponse editUser(UserUpdateReq updateReq);
 
-    UserResponse editOtherUserAccount(Long userId, String status);
+    UserResponse editUserRoleAndStatus(Long userId, UserRoleAndStatusUpdateReq updateReq);
 //
 //    ResponseEntity<ApiResponse> delete(Long id);
 }

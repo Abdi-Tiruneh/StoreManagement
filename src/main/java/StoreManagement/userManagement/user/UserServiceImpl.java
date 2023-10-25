@@ -3,17 +3,13 @@ package StoreManagement.userManagement.user;
 import StoreManagement.exceptions.customExceptions.BadRequestException;
 import StoreManagement.exceptions.customExceptions.ForbiddenException;
 import StoreManagement.exceptions.customExceptions.ResourceAlreadyExistsException;
-import StoreManagement.userManagement.dto.UserMapper;
-import StoreManagement.userManagement.dto.UserRegistrationReq;
-import StoreManagement.userManagement.dto.UserResponse;
-import StoreManagement.userManagement.dto.UserUpdateReq;
+import StoreManagement.userManagement.dto.*;
 import StoreManagement.userManagement.role.Role;
 import StoreManagement.userManagement.role.RoleService;
 import StoreManagement.utils.CurrentlyLoggedInUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +22,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserUtils userUtils;
     private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
     private final CurrentlyLoggedInUser currentlyLoggedInUser;
 
     @Override
@@ -47,33 +42,11 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserResponse(savedUser);
     }
 
-
     @Override
     @Transactional
     public UserResponse editUser(UserUpdateReq updateReq) {
         Users user = currentlyLoggedInUser.getUser();
-        performUserUpdate(user, updateReq);
-        user = userRepository.save(user);
-        return UserMapper.toUserResponse(user);
-    }
 
-    @Override
-    @Transactional
-    public UserResponse editOtherUserAccount(Long userId, String status) {
-        Users loggedInUserUser = currentlyLoggedInUser.getUser();
-        if (!loggedInUserUser.getRole().getRoleName().equalsIgnoreCase("ADMIN"))
-            throw new ForbiddenException("Admin access required.");
-
-        if (!("ACTIVE".equals(status) || "SUSPENDED".equals(status) || "BANNED".equals(status)))
-            throw new BadRequestException("Invalid status. Status should be one of: ACTIVE, SUSPENDED, BANNED");
-
-        Users user = userUtils.getById(userId);
-        user.setUserStatus(UserStatus.getEnum(status));
-        user = userRepository.save(user);
-        return UserMapper.toUserResponse(user);
-    }
-
-    private void performUserUpdate(Users user, UserUpdateReq updateReq) {
         if (updateReq.getFullName() != null)
             user.setFullName(updateReq.getFullName());
 
@@ -94,8 +67,41 @@ public class UserServiceImpl implements UserService {
 
             user.setUsername(updateReq.getUsername());
         }
+        user = userRepository.save(user);
+        return UserMapper.toUserResponse(user);
     }
 
+
+    @Override
+    @Transactional
+    public UserResponse editUserRoleAndStatus(Long userId, UserRoleAndStatusUpdateReq updateReq) {
+        Users loggedInUserUser = currentlyLoggedInUser.getUser();
+        if (!loggedInUserUser.getRole().getRoleName().equalsIgnoreCase("ADMIN"))
+            throw new ForbiddenException("Admin access required.");
+
+        Users user = userUtils.getById(userId);
+
+        if (updateReq.getStatus() != null)
+            changeStatus(user, updateReq.getStatus());
+
+        if (updateReq.getRoleId() != null)
+            changeUserRole(user, updateReq.getRoleId());
+
+        user = userRepository.save(user);
+        return UserMapper.toUserResponse(user);
+    }
+
+    private void changeStatus(Users user, String status) {
+        if (!("ACTIVE".equals(status) || "SUSPENDED".equals(status) || "BANNED".equals(status)))
+            throw new BadRequestException("Invalid status. Status should be one of: ACTIVE, SUSPENDED, BANNED");
+
+        user.setUserStatus(UserStatus.getEnum(status));
+    }
+
+    private void changeUserRole(Users user, Short roleId) {
+        Role role = roleService.getRoleById(roleId);
+        user.setRole(role);
+    }
 
     @Override
     public UserResponse me() {

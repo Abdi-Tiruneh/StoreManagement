@@ -26,5 +26,5 @@ public class UserRegistrationReq {
     private String password;
 
     @NotNull(message = "Role is required")
-    private Short roleId; // string representation of the role
+    private Short roleId;
 }
