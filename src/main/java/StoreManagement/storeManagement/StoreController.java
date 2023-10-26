@@ -3,6 +3,7 @@ package StoreManagement.storeManagement;
 import StoreManagement.storeManagement.dto.StoreRegistrationReq;
 import StoreManagement.storeManagement.dto.StoreResponse;
 import StoreManagement.storeManagement.dto.StoreUpdateReq;
+import StoreManagement.utils.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -75,5 +76,10 @@ public class StoreController {
             return ResponseEntity.ok(Collections.emptyList());
     }
 
+    @DeleteMapping({"/{storeId}"})
+    public ResponseEntity<ApiResponse> deleteStore(@PathVariable Long storeId) {
+        storeService.deleteStore(storeId);
+        return ApiResponse.success("Store deleted successfully");
+    }
 }
 

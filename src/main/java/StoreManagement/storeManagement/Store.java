@@ -1,19 +1,24 @@
 package StoreManagement.storeManagement;
 
 import StoreManagement.userManagement.user.Users;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "stores")
+@SQLDelete(sql = "UPDATE stores SET deleted = true WHERE store_id=?")
+@Where(clause = "deleted=false")
 @Builder
 @Data
 @NoArgsConstructor
@@ -52,4 +57,6 @@ public class Store {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @JsonIgnore
+    private boolean deleted = Boolean.FALSE;
 }

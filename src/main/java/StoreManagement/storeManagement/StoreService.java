@@ -26,4 +26,5 @@ public interface StoreService {
 
     Store utilGetStoreById(Long storeId);
 
+    void deleteStore(Long storeId);
 }

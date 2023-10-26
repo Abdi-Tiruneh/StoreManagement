@@ -4,6 +4,7 @@ import StoreManagement.userManagement.dto.UserRegistrationReq;
 import StoreManagement.userManagement.dto.UserResponse;
 import StoreManagement.userManagement.dto.UserRoleAndStatusUpdateReq;
 import StoreManagement.userManagement.dto.UserUpdateReq;
+import StoreManagement.utils.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -52,15 +53,11 @@ public class UserController {
         return ResponseEntity.ok(userService.editUserRoleAndStatus(userId, updateReq));
     }
 
-//    public ResponseEntity<StoreInventoryResponse> blockUser(@PathVariable Long id) {
-//        return ResponseEntity.ok(userService.blockUser(id));
-//    }
-//
-//    @DeleteMapping({"/{id}"})
-//    public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long id) {
-//        return userService.delete(id);
-//    }
-
+    @DeleteMapping({"/{userId}"})
+    public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
+        return ApiResponse.success("User deleted successfully");
+    }
 }
 
 

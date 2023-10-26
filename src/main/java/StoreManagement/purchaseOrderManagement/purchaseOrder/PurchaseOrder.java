@@ -4,20 +4,25 @@ import StoreManagement.itemManagement.item.Item;
 import StoreManagement.purchaseOrderManagement.supplier.Supplier;
 import StoreManagement.storeManagement.Store;
 import StoreManagement.userManagement.user.Users;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "purchase_orders")
+@SQLDelete(sql = "UPDATE purchase_orders SET deleted = true WHERE purchase_id=?")
+@Where(clause = "deleted=false")
 @Data
 public class PurchaseOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "purchaseOrder_id")
+    @Column(name = "purchase_id")
     private Long purchaseOrderId;
 
     @ManyToOne
@@ -51,6 +56,9 @@ public class PurchaseOrder {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @JsonIgnore
+    private boolean deleted = Boolean.FALSE;
 }
 
 

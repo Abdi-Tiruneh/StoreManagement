@@ -3,15 +3,20 @@ package StoreManagement.inventoryManagement;
 import StoreManagement.itemManagement.item.Item;
 import StoreManagement.storeManagement.Store;
 import StoreManagement.userManagement.user.Users;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "store_inventory")
+@SQLDelete(sql = "UPDATE store_inventory SET deleted = true WHERE store_inventory_id=?")
+@Where(clause = "deleted=false")
 @Data
 public class StoreInventory {
     @Id
@@ -46,4 +51,7 @@ public class StoreInventory {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @JsonIgnore
+    private boolean deleted = Boolean.FALSE;
 }

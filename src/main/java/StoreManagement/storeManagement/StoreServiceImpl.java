@@ -84,9 +84,15 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    public void deleteStore(Long storeId) {
+        utilGetStoreById(storeId);
+        storeRepository.deleteById(storeId);
+    }
+
+    @Override
     public Store utilGetStoreById(Long storeId) {
         return storeRepository.findById(storeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Item not found with ID: " + storeId));
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with ID: " + storeId));
     }
 
     @Override

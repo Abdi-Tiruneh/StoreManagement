@@ -17,12 +17,8 @@ public interface UserService {
 
     List<UserResponse> getUsers();
 
-    //
-//    StoreInventoryResponse blockUser(Long id);
-//
     UserResponse editUser(UserUpdateReq updateReq);
 
     UserResponse editUserRoleAndStatus(Long userId, UserRoleAndStatusUpdateReq updateReq);
-//
-//    ResponseEntity<ApiResponse> delete(Long id);
+    void deleteUser(Long userId);
 }

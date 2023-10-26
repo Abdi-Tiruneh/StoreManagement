@@ -91,6 +91,13 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserResponse(user);
     }
 
+    @Override
+    public void deleteUser(Long userId) {
+        userUtils.getById(userId);
+        userRepository.deleteById(userId);
+
+    }
+
     private void changeStatus(Users user, String status) {
         if (!("ACTIVE".equals(status) || "SUSPENDED".equals(status) || "BANNED".equals(status)))
             throw new BadRequestException("Invalid status. Status should be one of: ACTIVE, SUSPENDED, BANNED");
@@ -114,30 +121,5 @@ public class UserServiceImpl implements UserService {
         List<Users> users = userRepository.findAll(Sort.by(Sort.Order.asc("id")));
         return users.stream().map(UserMapper::toUserResponse).toList();
     }
-//
-//    @Override
-//    public StoreInventoryResponse blockUser(Long id) {
-//        Users user = userUtils.getById(id);
-//
-//        user.setUserStatus(Status.BLOCKED);
-//        user.setUpdatedBy(currentLoggedInUser.getUser().getFullName());
-//
-//        Users savedUser = userRepository.save(user);
-//        return StoreInventoryMapper.toUserResponse(savedUser);
-//    }
-//
-//    @Override
-//    @Transactional(rollbackFor = Exception.class)
-//    public ResponseEntity<ApiResponse> delete(Long id) {
-//        Users user = userUtils.getById(id);
-//
-//        // Set user attributes for deletion
-//        user.setDeleted(true);
-//        user.setDeletedAt(LocalDateTime.now().toString());
-//        user.setDeleteBy(currentLoggedInUser.getUser().getFullName());
-//
-//        userRepository.save(user);
-//        return ApiResponse.success("Password Changed Successfully!");
-//    }
 
 }

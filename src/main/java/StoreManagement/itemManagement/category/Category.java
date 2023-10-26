@@ -5,12 +5,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "categories")
+@SQLDelete(sql = "UPDATE categories SET deleted = true WHERE category_id=?")
+@Where(clause = "deleted=false")
 @Data
 public class Category {
     @Id
@@ -33,5 +37,8 @@ public class Category {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @JsonIgnore
+    private boolean deleted = Boolean.FALSE;
 
 }
