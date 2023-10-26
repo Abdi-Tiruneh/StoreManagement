@@ -5,7 +5,7 @@ import StoreManagement.storeManagement.Store;
 public class StoreMapper {
     public static StoreResponse toStoreResponse(Store store) {
         return StoreResponse.builder()
-                .id(store.getStoreId())
+                .storeId(store.getStoreId())
                 .storeName(store.getStoreName())
                 .location(store.getLocation())
                 .contactInformation(store.getContactInformation())

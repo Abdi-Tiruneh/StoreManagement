@@ -1,6 +1,7 @@
 package StoreManagement.inventoryManagement.dto;
 
 import StoreManagement.itemManagement.item.dto.ItemResponse;
+import StoreManagement.storeManagement.dto.StoreResponse;
 import StoreManagement.userManagement.dto.UserResponse;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
@@ -15,6 +16,7 @@ public class StoreInventoryResponse {
 
     private Long storeInventoryId;
 
+    private StoreResponse store;
     private ItemResponse item;
 
     private int quantity;

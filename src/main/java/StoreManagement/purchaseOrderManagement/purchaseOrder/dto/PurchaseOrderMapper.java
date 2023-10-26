@@ -29,7 +29,7 @@ public class PurchaseOrderMapper {
 
         Store store = purchaseOrder.getStore();
         StoreResponse storeResponse = StoreResponse.builder()
-                .id(store.getStoreId())
+                .storeId(store.getStoreId())
                 .storeName(store.getStoreName())
                 .storeType(store.getStoreType())
                 .build();
