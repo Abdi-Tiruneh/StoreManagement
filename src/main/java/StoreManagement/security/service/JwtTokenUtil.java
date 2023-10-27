@@ -34,8 +34,9 @@ public class JwtTokenUtil {
         return JWT.create()
                 .withSubject(user.getUsername())
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_TIME)) // 30 minutes
+                .withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_TIME))
                 .withClaim("role", role)
+                .withIssuer("Store Management App")
                 .sign(Algorithm.HMAC256(SECRET_KEY.getBytes()));
     }
 
@@ -43,7 +44,7 @@ public class JwtTokenUtil {
         return JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME))
-                .withIssuer(request.getRequestURL().toString())
+                .withIssuer("Store Management App")
                 .sign(Algorithm.HMAC256(SECRET_KEY.getBytes()));
     }
 
