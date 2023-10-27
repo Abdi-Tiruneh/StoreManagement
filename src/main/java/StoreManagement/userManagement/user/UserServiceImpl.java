@@ -1,7 +1,6 @@
 package StoreManagement.userManagement.user;
 
 import StoreManagement.exceptions.customExceptions.BadRequestException;
-import StoreManagement.exceptions.customExceptions.ForbiddenException;
 import StoreManagement.exceptions.customExceptions.ResourceAlreadyExistsException;
 import StoreManagement.userManagement.dto.*;
 import StoreManagement.userManagement.role.Role;
@@ -26,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public UserResponse register(UserRegistrationReq userReq) {
         if (userUtils.isEmailTaken(userReq.getEmail()))
             throw new ResourceAlreadyExistsException("Email is already taken");
@@ -74,11 +73,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAuthority('ADMIN')")
     public UserResponse editUserRoleAndStatus(Long userId, UserRoleAndStatusUpdateReq updateReq) {
-        Users loggedInUserUser = currentlyLoggedInUser.getUser();
-        if (!loggedInUserUser.getRole().getRoleName().equalsIgnoreCase("ADMIN"))
-            throw new ForbiddenException("Admin access required.");
-
         Users user = userUtils.getById(userId);
 
         if (updateReq.getStatus() != null)
@@ -92,6 +88,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponse me() {
+        Users user = currentlyLoggedInUser.getUser();
+        return UserMapper.toUserResponse(user);
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STORE_MANAGER')")
+    public List<UserResponse> getUsers() {
+        List<Users> users = userRepository.findAll(Sort.by(Sort.Order.asc("id")));
+        return users.stream().map(UserMapper::toUserResponse).toList();
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteUser(Long userId) {
         userUtils.getById(userId);
         userRepository.deleteById(userId);
@@ -108,18 +118,6 @@ public class UserServiceImpl implements UserService {
     private void changeUserRole(Users user, Short roleId) {
         Role role = roleService.getRoleById(roleId);
         user.setRole(role);
-    }
-
-    @Override
-    public UserResponse me() {
-        Users user = currentlyLoggedInUser.getUser();
-        return UserMapper.toUserResponse(user);
-    }
-
-    @Override
-    public List<UserResponse> getUsers() {
-        List<Users> users = userRepository.findAll(Sort.by(Sort.Order.asc("id")));
-        return users.stream().map(UserMapper::toUserResponse).toList();
     }
 
 }

@@ -9,6 +9,7 @@ import StoreManagement.storeManagement.dto.StoreUpdateReq;
 import StoreManagement.utils.CurrentlyLoggedInUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ public class StoreServiceImpl implements StoreService {
     private final CurrentlyLoggedInUser currentlyLoggedInUser;
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public StoreResponse createStore(StoreRegistrationReq registrationReq) {
         if (storeRepository.findByContactInformation((registrationReq.getContactInformation())).isPresent())
             throw new ResourceAlreadyExistsException("Contact Information is already taken");
@@ -41,6 +43,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public StoreResponse updateStore(Long id, StoreUpdateReq updateReq) {
         Store store = getById(id);
 
@@ -84,6 +87,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteStore(Long storeId) {
         utilGetStoreById(storeId);
         storeRepository.deleteById(storeId);

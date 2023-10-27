@@ -15,6 +15,7 @@ import StoreManagement.utils.CurrentlyLoggedInUser;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +28,9 @@ public class StoreInventoryServiceImpl implements StoreInventoryService {
     private final ItemService itemService;
     private final CurrentlyLoggedInUser currentlyLoggedInUser;
     private final EmailService emailService;
+
     @Override
+    @PreAuthorize("hasAuthority('STORE_MANAGER')")
     public StoreInventoryResponse createStoreInventory(StoreInventoryReq storeInventoryReq) {
         Long itemId = storeInventoryReq.getItemId();
         Long storeId = storeInventoryReq.getStoreId();
@@ -86,6 +89,7 @@ public class StoreInventoryServiceImpl implements StoreInventoryService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAuthority('STORE_STAFF') or hasAuthority('STORE_MANAGER')")
     public StoreInventoryResponse processItemSaleFromInventory(Long storeInventoryId, ItemSaleFromInventoryReq itemSaleFromInventoryReq) {
         StoreInventory storeInventory = retrieveStoreInventory(storeInventoryId);
 

@@ -15,6 +15,7 @@ import StoreManagement.storeManagement.StoreService;
 import StoreManagement.utils.CurrentlyLoggedInUser;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,6 +33,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private final StoreInventoryService storeInventoryService;
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STORE_MANAGER')")
     public PurchaseOrderResponse createPurchaseOrder(PurchaseOrderRequest purchaseOrderRequest) {
         // Retrieve the store and item based on the request.
         Store store = storeService.utilGetStoreById(purchaseOrderRequest.getStoreId());
@@ -58,6 +60,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STORE_MANAGER')")
     public PurchaseOrderResponse updatePurchaseOrder(Long orderId, PurchaseOrderUpdateReq updateRequest) {
         PurchaseOrder purchaseOrder = utilGetPurchaseOrderById(orderId);
 
@@ -76,6 +79,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STORE_MANAGER')")
     public PurchaseOrderResponse updatePurchaseOrderStatus(Long orderId, String status) {
         // Check if the provided status is valid
         if (!("PENDING".equals(status) || "APPROVED".equals(status) || "DELIVERED".equals(status)))
@@ -124,6 +128,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STORE_MANAGER')")
     public void deletePurchaseOrder(Long orderId) {
         PurchaseOrder existingPurchaseOrder = utilGetPurchaseOrderById(orderId);
         purchaseOrderRepository.delete(existingPurchaseOrder);

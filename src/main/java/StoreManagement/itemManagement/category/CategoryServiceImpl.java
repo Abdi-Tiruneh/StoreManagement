@@ -4,6 +4,7 @@ import StoreManagement.exceptions.customExceptions.ResourceAlreadyExistsExceptio
 import StoreManagement.exceptions.customExceptions.ResourceNotFoundException;
 import StoreManagement.itemManagement.category.dto.CategoryReq;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Category createCategory(CategoryReq categoryReq) {
         String categoryName = categoryReq.getCategoryName().toUpperCase();
         if (categoryRepository.existsByCategoryNameIgnoreCase(categoryName))
@@ -39,6 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Category updateCategory(Integer categoryId, CategoryReq categoryReq) {
         Category category = getCategoryById(categoryId);
         String newCategoryName = categoryReq.getCategoryName();

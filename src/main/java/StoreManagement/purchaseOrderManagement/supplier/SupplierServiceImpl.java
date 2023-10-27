@@ -6,6 +6,7 @@ import StoreManagement.itemManagement.category.CategoryService;
 import StoreManagement.purchaseOrderManagement.supplier.dto.AssignToCategoryReq;
 import StoreManagement.purchaseOrderManagement.supplier.dto.SupplierRegReq;
 import StoreManagement.purchaseOrderManagement.supplier.dto.SupplierUpdateReq;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Supplier createSupplier(SupplierRegReq supplierRegReq) {
         Supplier supplier = new Supplier();
         supplier.setSupplierName(supplierRegReq.getSupplierName());
@@ -42,6 +44,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Supplier updateSupplier(Long supplierId, SupplierUpdateReq updateReq) {
         Supplier existingSupplier = getSupplierById(supplierId);
 
@@ -56,6 +59,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Supplier assignSupplierToCategory(AssignToCategoryReq assignToCategoryReq) {
         Supplier supplier = getSupplierById(assignToCategoryReq.getSupplierId());
         Category category = categoryService.getCategoryById(assignToCategoryReq.getCategoryId());
@@ -66,6 +70,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteSupplier(Long supplierId) {
         Supplier existingSupplier = getSupplierById(supplierId);
         supplierRepository.delete(existingSupplier);
